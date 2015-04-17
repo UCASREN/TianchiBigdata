@@ -24,11 +24,12 @@ def generate_matrix(uipairs_features_file_path):
         user_id = line_entrys[0]
         item_id = line_entrys[1]
 
-        matrix_line = delimiter.join(line_entrys[2:-1]) + \
-                       + \
-                      items_features[item_id] + \
-                      get_label_by_uipair(user_id, item_id) + "\n"
-        matrix_file.write(matrix_line)
+        if item_id in items_features:
+            matrix_line = delimiter.join(line_entrys[:-1]) + \
+                          users_features[user_id] + "," + \
+                          items_features[item_id] + "," + \
+                          get_label_by_uipair(user_id, item_id) + "\n"
+            matrix_file.write(matrix_line)
 
     matrix_file.close()
     uipairs_features_file.close()
@@ -74,7 +75,7 @@ def load_labels(label_file_path):
 
 # 获取ui对标签
 def get_label_by_uipair(user_id, item_id):
-    if labels[user_id+","+item_id] == "1":
+    if (user_id+delimiter+item_id) in labels:
         return "1"
     else:
         return "0"
@@ -82,7 +83,7 @@ def get_label_by_uipair(user_id, item_id):
 
 
 path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))+'\\source'
-os.chdir(path)  ## change dir to '~/files'
+os.chdir(path)  # change dir to '~/files'
 
 users_features_file_path = "users_featurers.csv"
 items_features_file_path = "items_featurers.csv"
