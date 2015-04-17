@@ -1,5 +1,7 @@
 # coding=utf-8
+
 __author__ = 'jinyu'
+
 # brand
 # sold,sold_user{user,count}
 # cart,cart_user[]
@@ -7,7 +9,8 @@ __author__ = 'jinyu'
 # click,click_user[]
 
 import os
-import types
+from util import *
+
 
 buy_behaviour_type = '4'
 cart_behaviour_type = '3'
@@ -15,9 +18,10 @@ favorite_behaviour_type = '2'
 click_behaviour_type = '1'
 delimiter = ','
 
+
 def extract_items_features(train_file_path):
     # 按商品id排序
-    generate_sortedfile_byitem(train_file_path, "sorted_by_item-" + train_file_path)
+    generate_sortedfile(train_file_path, "sorted_by_item-" + train_file_path, 1)
 
     train_file = open("sorted_by_item-" + train_file_path)
     items_features_file = open("items_featurers.csv", 'w')
@@ -40,6 +44,10 @@ def extract_items_features(train_file_path):
                      'click_user': {},
                      'user': []
                      }
+    # 输出栏位名
+    # item_features = get_other_basic_item_features(item_features)
+    # items_features_file.write("item_id" + "," + get_features_key(item_features) + "\n")
+    # item_features = initial_item_features(item_features)
 
     pre_item_id = train_file.readline().split(delimiter)[1]  # 获取第一行的item_id
     train_file.seek(0)
@@ -49,8 +57,7 @@ def extract_items_features(train_file_path):
         # 如果当前pre_user_id和读取到的user_id不一样则输出当前item_features并置空
         if not item_id == pre_item_id:
             item_features = get_other_basic_item_features(item_features)  # 获取用户其他特征
-            items_features_file.write(
-                pre_item_id + "," + get_item_features_str(item_features) + "\n")  # 输出当前item_features
+            items_features_file.write(pre_item_id + "," + get_item_features_str(item_features) + "\n")  # 输出当前item_features
             item_features = initial_item_features(item_features)  # 初始化置空item_features
 
         item_features['user'].append(user_id)
@@ -74,12 +81,12 @@ def extract_items_features(train_file_path):
         pre_item_id = item_id
 
     item_features = get_other_basic_item_features(item_features)
-    print item_features  # 输出最后一个item_features到文件并重新初始化item_features
+    # print item_features  # 输出最后一个item_features到文件并重新初始化item_features
     items_features_file.write(pre_item_id + "," + get_item_features_str(item_features) + "\n")
 
-    items_features_file.close()
     train_file.close()
-    print item_features.keys()
+    items_features_file.close()
+
 
 def get_other_basic_item_features(item_features):
     for count in item_features['sold_user'].values():
@@ -138,24 +145,12 @@ def initial_item_features(item_features):
 def get_item_features_str(item_features):
     item_features_str = ''
     for k, v in item_features.iteritems():
-        if type(v) is not types.ListType:
+        if (type(v) is not types.ListType) and (type(v) is not types.DictType):
             item_features_str += str(v) + ','
     return item_features_str
 
 
-def generate_sortedfile_byitem(origin_file_path, filename):
-    originfile = open(origin_file_path)
-
-    entrys = originfile.readlines()
-    entrys.sort(key=lambda x: x.split(",")[1])
-    sortedfile = open(filename, "w")
-    for i in entrys:
-        sortedfile.write(i)
-    sortedfile.close()
-    originfile.close()
-
 path = os.path.abspath(os.path.dirname(os.path.dirname(__file__))) + '\\source'
-os.chdir(path)  ## change dir to '~/files'
-train_file_path = "test_item.csv"
-# generate_sortedfile_byitem(train_file_path, "sorted_by_item-" + train_file_path)
+os.chdir(path)  # change dir to '~/files'
+train_file_path = "train_filtered_unknownitem_tianchi_mobile_recommend_train_user.csv"
 extract_items_features(train_file_path)

@@ -11,6 +11,7 @@ favorite_behaviour_type = '2'
 click_behaviour_type = '1'
 delimiter = ','
 
+
 def extract_user_features(train_file_path):
 
     train_file = open(train_file_path)

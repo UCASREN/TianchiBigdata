@@ -3,6 +3,8 @@
 
 import os
 from datetime import *
+from util import *
+
 
 delimiter = ','
 
@@ -67,43 +69,31 @@ def split_file(raw_file_path, seperate_day, begin_date):
     raw_file.close()
 
     generate_sortedfile("temp_" + train_file_path, train_file_path)
+    os.remove("temp_" + train_file_path)
     print "generate train_file completed"
+
     generate_sortedfile("temp_" + validation_file_path, validation_file_path)
+    os.remove("temp_" + validation_file_path)
     print "generate validation_file completed"
+
     generate_sortedfile("temp_" + all_file_path, all_file_path)
     print "generate all_file completed"
-
-
-# 解析日期
-def parse_date(raw_date):
-    # entry_date = raw_date.decode("gbk")
-    entry_date = raw_date
-    year, month, day = entry_date.split(" ")[0].split("-")
-    return int(year), int(month), int(day)
-
-
-# 文件排序
-def generate_sortedfile(origin_file_path, filename):
-    originfile = open(origin_file_path)
-
-    entrys = originfile.readlines()
-    entrys.sort(key=lambda x: x.split(",")[0])
-    sortedfile = open(filename, "w")
-    for i in entrys:
-        sortedfile.write(i)
-    sortedfile.close()
-    originfile.close()
-    os.remove(origin_file_path)
+    os.remove("temp_" + all_file_path)
 
 
 
-SEPERATEDAY =date(2014, 12, 16)
+
+SEPERATEDAY =date(2014, 12, 16)     # 结束时间(包含)
 BEGINDAY = date(2014, 11, 18)
 path=os.path.abspath(os.path.dirname(os.path.dirname(__file__)))+'\\source'
-os.chdir(path)  ## change dir to '~/files'
+os.chdir(path)  # change dir to '~/files'
 
 user_raw_file_path = "tianchi_mobile_recommend_train_user.csv"
 item_raw_file_path = "tianchi_mobile_recommend_train_item.csv"
 
+begin_time = datetime.now()
+
 filtered_file_path = filter_unknown_item_in_user_data(user_raw_file_path, item_raw_file_path)
 split_file(filtered_file_path, SEPERATEDAY, BEGINDAY)
+
+print datetime.now() - begin_time
