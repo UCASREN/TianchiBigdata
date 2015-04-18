@@ -25,7 +25,7 @@ def generate_matrix(uipairs_features_file_path):
         item_id = line_entrys[1]
 
         if item_id in items_features:
-            matrix_line = delimiter.join(line_entrys[:-1]) + \
+            matrix_line = delimiter.join(line_entrys[:-1]) + "," + \
                           users_features[user_id] + "," + \
                           items_features[item_id] + "," + \
                           get_label_by_uipair(user_id, item_id) + "\n"
