@@ -61,3 +61,9 @@ def split_file_by_date(raw_file_path, begin, end):
 
     raw_file.close()
     split_file.close()
+
+
+def parse_line(line):
+    user_id, item_id, behavior_type, user_geohash, item_category, time, date = line.split(delimiter)
+    date = datetime.datetime.strptime(date, "%Y-%m-%d %H")
+    return user_id, item_id, behavior_type, user_geohash, item_category, time, date
