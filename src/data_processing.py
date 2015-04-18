@@ -55,8 +55,8 @@ def split_file(raw_file_path, seperate_day, begin_date):
         entry_date = date(*parse_date(entry[5]))
         date_delta = (entry_date - begin_date).days
 
-        entry.insert(5, str(date_delta))
-        write_data = ",".join(entry[:7])
+        # entry.insert(5, str(date_delta))
+        write_data = ",".join(entry[:6])
         if date_delta <= interval_days:
             t_train.write(write_data)
         else:
@@ -83,7 +83,7 @@ def split_file(raw_file_path, seperate_day, begin_date):
 
 
 
-SEPERATEDAY =date(2014, 12, 16)     # 结束时间(包含)
+SEPERATEDAY =date(2014, 12, 8)     # 结束时间(包含)
 BEGINDAY = date(2014, 11, 18)
 path=os.path.abspath(os.path.dirname(os.path.dirname(__file__)))+'\\source'
 os.chdir(path)  # change dir to '~/files'
