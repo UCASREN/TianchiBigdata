@@ -87,7 +87,6 @@ def extract_user_features(train_file_path, begin_date, end_date):
     print get_features_key(all_features)
     user_features_file.write("user_id" + "," + get_features_key(all_features) + "\n")
 
-
     initial_tmp_features(tmp_features)
 
     pre_user_id = train_file.readline().split(delimiter)[0]     # 获取第一行的user_id
